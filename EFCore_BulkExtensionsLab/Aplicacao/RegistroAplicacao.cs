@@ -49,6 +49,11 @@ namespace EFCore_BulkExtensionsLab.Aplicacao
             return Result;
         }
 
+        /// <summary>
+        /// Documentação: https://github.com/borisdj/EFCore.BulkExtensions
+        /// </summary>
+        /// <param name="Quantidade"></param>
+        /// <returns></returns>
         public async Task<Retorno> SalvarBulkExtensions(long Quantidade)
         {
             var Result = new Retorno();
