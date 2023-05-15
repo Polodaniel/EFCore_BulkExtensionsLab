@@ -1,4 +1,5 @@
-﻿using EFCore_BulkExtensionsLab.Data;
+﻿using EFCore.BulkExtensions;
+using EFCore_BulkExtensionsLab.Data;
 using EFCore_BulkExtensionsLab.Dominio;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -34,8 +35,35 @@ namespace EFCore_BulkExtensionsLab.Aplicacao
                 await _contexto.Registro.AddRangeAsync(Registros);
                 await _contexto.SaveChangesAsync();
 
-                Result.QuantidadeRegistros = Registros.Count;
-                Result.DataHoraTermino = DateTime.Now;
+                var QuantidadeRegistros = Registros.Count;
+                var QuantidadeSubRegistros = Registros.SelectMany(x => x.SubRegistros).Count();
+
+                Result.AtualizarRetorno(QuantidadeRegistros, QuantidadeSubRegistros);
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+                throw;
+            }
+
+            return Result;
+        }
+
+        public async Task<Retorno> SalvarBulkExtensions(long Quantidade)
+        {
+            var Result = new Retorno();
+
+            try
+            {
+                var Registros = MontarRegistros(Quantidade);
+
+                await _contexto.BulkInsertAsync(Registros, b => b.IncludeGraph = true);
+                await _contexto.BulkSaveChangesAsync();
+
+                var QuantidadeRegistros = Registros.Count;
+                var QuantidadeSubRegistros = Registros.SelectMany(x => x.SubRegistros).Count();
+
+                Result.AtualizarRetorno(QuantidadeRegistros, QuantidadeSubRegistros);
             }
             catch (Exception ex)
             {

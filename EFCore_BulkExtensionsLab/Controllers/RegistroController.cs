@@ -19,12 +19,25 @@ namespace EFCore_BulkExtensionsLab.Controllers
         }
 
 
-        [HttpGet(Name = "SalvarAddRange")]
+        [HttpGet("SalvarAddRange")]
         public async Task<ActionResult<Retorno>> SalvarAddRange([FromQuery] long QuantidadeRegistros = 500000)
         {
             try
             {
                 return await _App.SalvarAddRange(QuantidadeRegistros);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("SalvarBulkExtensions")]
+        public async Task<ActionResult<Retorno>> SalvarBulkExtensions([FromQuery] long QuantidadeRegistros = 500000)
+        {
+            try
+            {
+                return await _App.SalvarBulkExtensions(QuantidadeRegistros);
             }
             catch (Exception ex)
             {
